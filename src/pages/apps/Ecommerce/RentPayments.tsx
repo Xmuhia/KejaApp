@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Row, Col, Card, Button, Form, Table, Badge } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { format } from 'date-fns';
@@ -52,18 +52,7 @@ const RentPayments: React.FC = () => {
   const [dateRange, setDateRange] = useState({ start: '', end: '' });
   const [statusFilter, setStatusFilter] = useState('All');
 
-  useEffect(() => {
-    // In a real application, fetch data from an API here
-    // For now, we'll use the mock data
-    setRentPayments(mockRentPayments);
-    setFilteredPayments(mockRentPayments);
-  }, []);
-
-  useEffect(() => {
-    filterPayments();
-  }, [dateRange, statusFilter, rentPayments]);
-
-  const filterPayments = () => {
+  const filterPayments = useCallback(() => {
     let filtered = rentPayments;
 
     if (dateRange.start && dateRange.end) {
@@ -78,7 +67,17 @@ const RentPayments: React.FC = () => {
     }
 
     setFilteredPayments(filtered);
-  };
+  }, [rentPayments, dateRange, statusFilter]);
+
+  useEffect(() => {
+    // In a real application, fetch data from an API here
+    setRentPayments(mockRentPayments);
+    setFilteredPayments(mockRentPayments);
+  }, []);
+
+  useEffect(() => {
+    filterPayments();
+  }, [dateRange, statusFilter, rentPayments, filterPayments]);
 
   const handleDateRangeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setDateRange({ ...dateRange, [e.target.name]: e.target.value });
@@ -209,8 +208,7 @@ const RentPayments: React.FC = () => {
                   <Col md={3}>
                     <Form.Group>
                       <Form.Label>Status</Form.Label>
-                      <Form.Control
-                        as="select"
+                      <Form.Select
                         value={statusFilter}
                         onChange={handleStatusFilterChange}
                       >
@@ -218,7 +216,7 @@ const RentPayments: React.FC = () => {
                         <option value="Paid">Paid</option>
                         <option value="Pending">Pending</option>
                         <option value="Overdue">Overdue</option>
-                      </Form.Control>
+                      </Form.Select>
                     </Form.Group>
                   </Col>
                 </Row>

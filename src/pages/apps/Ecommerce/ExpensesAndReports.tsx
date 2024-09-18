@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Row, Col, Card, Button, Form, Table, Badge, Tabs, Tab, Modal } from 'react-bootstrap';
+import React, { useState, useEffect, useCallback } from 'react';
+import { Row, Col, Card, Button, Form, Table, Tabs, Tab, Modal } from 'react-bootstrap';
 import { format } from 'date-fns';
 import Chart from 'react-apexcharts';
 import { ApexOptions } from 'apexcharts';
@@ -65,31 +65,20 @@ const mockReports: Report[] = [
   // Add more mock data as needed
 ];
 
-const ExpensesReports: React.FC = () => {
+const ExpensesAndReports: React.FC = () => {
   const [expenses, setExpenses] = useState<Expense[]>(mockExpenses);
   const [reports, setReports] = useState<Report[]>(mockReports);
   const [filteredExpenses, setFilteredExpenses] = useState<Expense[]>(mockExpenses);
   const [dateRange, setDateRange] = useState({ start: '', end: '' });
   const [categoryFilter, setCategoryFilter] = useState('All');
   const [showReportModal, setShowReportModal] = useState(false);
-  const [newReport, setNewReport] = useState<Partial<Report>>({
+  const [newReport, setNewReport] = useState<Partial<Report> & { dateRange: { start: string; end: string } }>({
     name: '',
     type: 'Profit and Loss',
     dateRange: { start: '', end: '' },
   });
 
-  useEffect(() => {
-    // In a real application, fetch data from an API here
-    setExpenses(mockExpenses);
-    setReports(mockReports);
-    setFilteredExpenses(mockExpenses);
-  }, []);
-
-  useEffect(() => {
-    filterExpenses();
-  }, [dateRange, categoryFilter, expenses]);
-
-  const filterExpenses = () => {
+  const filterExpenses = useCallback(() => {
     let filtered = expenses;
 
     if (dateRange.start && dateRange.end) {
@@ -103,7 +92,18 @@ const ExpensesReports: React.FC = () => {
     }
 
     setFilteredExpenses(filtered);
-  };
+  }, [expenses, dateRange, categoryFilter]);
+
+  useEffect(() => {
+    // In a real application, fetch data from an API here
+    setExpenses(mockExpenses);
+    setReports(mockReports);
+    setFilteredExpenses(mockExpenses);
+  }, []);
+
+  useEffect(() => {
+    filterExpenses();
+  }, [dateRange, categoryFilter, expenses, filterExpenses]);
 
   const handleDateRangeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setDateRange({ ...dateRange, [e.target.name]: e.target.value });
@@ -117,23 +117,35 @@ const ExpensesReports: React.FC = () => {
     generatePDF(filteredExpenses, 'Expense Report');
   };
 
-  const handleNewReportChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleNewReportChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     if (name === 'start' || name === 'end') {
-      setNewReport({
-        ...newReport,
-        dateRange: { ...newReport.dateRange, [name]: value },
-      });
+      setNewReport((prev) => ({
+        ...prev,
+        dateRange: { 
+          ...prev.dateRange,
+          [name]: value 
+        },
+      }));
     } else {
-      setNewReport({ ...newReport, [name]: value });
+      setNewReport((prev) => ({ ...prev, [name]: value }));
     }
+  };
+
+  const handleReportTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setNewReport((prev) => ({ ...prev, type: e.target.value as Report['type'] }));
   };
 
   const handleGenerateReport = () => {
     // In a real application, you would send this data to your backend
     const generatedReport: Report = {
       id: reports.length + 1,
-      ...newReport as Report,
+      name: newReport.name || '',
+      type: newReport.type as Report['type'],
+      dateRange: {
+        start: newReport.dateRange.start,
+        end: newReport.dateRange.end,
+      },
       generatedOn: new Date().toISOString(),
     };
     setReports([...reports, generatedReport]);
@@ -254,8 +266,7 @@ const ExpensesReports: React.FC = () => {
                       <Col md={3}>
                         <Form.Group>
                           <Form.Label>Category</Form.Label>
-                          <Form.Control
-                            as="select"
+                          <Form.Select
                             value={categoryFilter}
                             onChange={handleCategoryFilterChange}
                           >
@@ -263,7 +274,7 @@ const ExpensesReports: React.FC = () => {
                             <option value="Maintenance">Maintenance</option>
                             <option value="Utilities">Utilities</option>
                             {/* Add more categories as needed */}
-                          </Form.Control>
+                          </Form.Select>
                         </Form.Group>
                       </Col>
                     </Row>
@@ -366,25 +377,24 @@ const ExpensesReports: React.FC = () => {
             </Form.Group>
             <Form.Group className="mb-3">
               <Form.Label>Report Type</Form.Label>
-              <Form.Control
-                as="select"
+              <Form.Select
                 name="type"
                 value={newReport.type}
-                onChange={handleNewReportChange}
+                onChange={handleReportTypeChange}
               >
-                <option>Profit and Loss</option>
-                <option>Cash Flow</option>
-                <option>Occupancy</option>
-                <option>Maintenance</option>
-                <option>Utility</option>
-              </Form.Control>
+                <option value="Profit and Loss">Profit and Loss</option>
+                <option value="Cash Flow">Cash Flow</option>
+                <option value="Occupancy">Occupancy</option>
+                <option value="Maintenance">Maintenance</option>
+                <option value="Utility">Utility</option>
+              </Form.Select>
             </Form.Group>
             <Form.Group className="mb-3">
               <Form.Label>Start Date</Form.Label>
               <Form.Control
                 type="date"
                 name="start"
-                value={newReport.dateRange?.start}
+                value={newReport.dateRange.start}
                 onChange={handleNewReportChange}
               />
             </Form.Group>
@@ -393,7 +403,7 @@ const ExpensesReports: React.FC = () => {
               <Form.Control
                 type="date"
                 name="end"
-                value={newReport.dateRange?.end}
+                value={newReport.dateRange.end}
                 onChange={handleNewReportChange}
               />
             </Form.Group>
@@ -412,4 +422,4 @@ const ExpensesReports: React.FC = () => {
   );
 };
 
-export default ExpensesReports;
+export default ExpensesAndReports;
