@@ -7,14 +7,7 @@ import { useTranslation } from "react-i18next";
 // actions
 import { activateUser } from "../../redux/actions";
 
-// components
-import { VerticalForm, FormInput } from "../../components/";
-
 import AuthLayout from "./AuthLayout";
-
-interface UserData {
-  token: string;
-}
 
 /* bottom links */
 const BottomLink = () => {
@@ -56,7 +49,7 @@ const ActivationPage = () => {
     }
   }, [activationSuccess, error, navigate]);
 
-  const onSubmit = () => {
+  const handleActivation = () => {
     if (token) {
       dispatch(activateUser(token) as any);
     } else {
@@ -65,44 +58,32 @@ const ActivationPage = () => {
   };
 
   return (
-    <>
-      <AuthLayout
-        helpText={t("Click the button below to activate your account.")}
-        bottomLinks={<BottomLink />}
-      >
-        {activationStatus === 'error' && (
-          <Alert variant="danger" className="my-2">
-            {t("Activation failed. Please try again.")}
-          </Alert>
-        )}
+    <AuthLayout
+      helpText={t("Click the button below to activate your account.")}
+      bottomLinks={<BottomLink />}
+    >
+      {activationStatus === 'error' && (
+        <Alert variant="danger" className="my-2">
+          {t("Activation failed. Please try again.")}
+        </Alert>
+      )}
 
-        {activationStatus === 'success' && (
-          <Alert variant="success" className="my-2">
-            {t("Your account has been successfully activated!")}
-          </Alert>
-        )}
+      {activationStatus === 'success' && (
+        <Alert variant="success" className="my-2">
+          {t("Your account has been successfully activated!")}
+        </Alert>
+      )}
 
-        <VerticalForm<UserData>
-          onSubmit={onSubmit}
-          defaultValues={{ token: token || '' }}
+      <div className="text-center">
+        <Button 
+          variant="primary" 
+          onClick={handleActivation} 
+          disabled={loading || activationStatus !== 'idle'}
         >
-          <FormInput
-            label={t("Activation Token")}
-            type="text"
-            name="token"
-            placeholder={t("Your activation token")}
-            containerClass={"mb-3"}
-            disabled
-          />
-
-          <div className="text-center d-grid">
-            <Button variant="primary" type="submit" disabled={loading || activationStatus !== 'idle'}>
-              {loading ? t("Activating...") : t("Activate Account")}
-            </Button>
-          </div>
-        </VerticalForm>
-      </AuthLayout>
-    </>
+          {loading ? t("Activating...") : t("Activate Account")}
+        </Button>
+      </div>
+    </AuthLayout>
   );
 };
 
