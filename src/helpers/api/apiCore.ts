@@ -223,4 +223,9 @@ if (user) {
   }
 }
 
+export const activateUser = (params: { token: string }) => {
+  const baseUrl = "/api/auth/activate"; // adjust this URL according to your backend API
+  return axios.post(baseUrl, params);
+};
+
 export { APICore, setAuthorization };
