@@ -15,6 +15,7 @@ const ForgetPassword = React.lazy(() => import("../pages/auth/ForgetPassword"));
 const Register = React.lazy(() => import("../pages/auth/Register"));
 const SignInSignUp = React.lazy(() => import("../pages/auth/SignInSignUp"));
 const LockScreen = React.lazy(() => import("../pages/auth/LockScreen"));
+const ActivationPage = React.lazy(() => import("../pages/auth/ActivationPage"));
 
 // auth2
 const Login2 = React.lazy(() => import("../pages/auth2/Login2"));
@@ -968,6 +969,12 @@ const authRoutes: RoutesProps[] = [
     path: "/auth/login",
     name: "Login",
     element: <Login />,
+    route: Route,
+  },
+  {
+    path: "/auth/activation/:token",
+    name: "Activation",
+    element: <ActivationPage />,
     route: Route,
   },
   {
