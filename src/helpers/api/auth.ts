@@ -23,4 +23,9 @@ function forgotPassword(params: { username: string }) {
   return api.create(`${baseUrl}`, params);
 }
 
-export { login, logout, signup, forgotPassword };
+function activateUser(params: { token: string }) {
+  const baseUrl = "/activate/";
+  return api.create(`${baseUrl}`, params);
+}
+
+export { login, logout, signup, forgotPassword, activateUser };
