@@ -209,6 +209,7 @@ interface TopbarProps {
   topbarDark?: boolean;
 }
 
+
 const Topbar = ({
   hideLogo,
   navCssClasses,
@@ -226,7 +227,7 @@ const Topbar = ({
     leftSideBarType: state.Layout.leftSideBarType,
   }));
 
-
+  const {user} = useSelector((state: RootState)=> state.Auth)
   /**
    * Toggle the leftmenu when having mobile screen
    */
@@ -301,6 +302,9 @@ const Topbar = ({
   //     dispatch(changeSidebarType(SideBarTypes.LEFT_SIDEBAR_TYPE_CONDENSED));
   //   if (leftSideBarType === 'condensed') dispatch(changeSidebarType(SideBarTypes.LEFT_SIDEBAR_TYPE_DEFAULT));
   // };
+
+  //data call
+
 
   return (
     <React.Fragment>
@@ -383,8 +387,8 @@ const Topbar = ({
               <ProfileDropdown
                 profilePic={profilePic}
                 menuItems={ProfileMenus}
-                username={"Geneva"}
-                userTitle={"Founder"}
+                username={user?.name}
+                userTitle={user?.role}
               />
             </li>
             <li>

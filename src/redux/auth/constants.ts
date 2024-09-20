@@ -11,4 +11,7 @@ export enum AuthActionTypes {
 
 
   RESET = "@@auth/RESET",
+
+  GETDATA = "@@auth/GETDATA",
+  UPDATEUSER = "@@auth/UPDATEUSER"
 }

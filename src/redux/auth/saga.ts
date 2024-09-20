@@ -11,10 +11,11 @@ import {
   signup as signupApi,
   forgotPassword as forgotPasswordApi,
   activateUser as activateUserApi,
+  getData as getDataApi
 } from '../../helpers/';
 
 // actions
-import { authApiResponseSuccess, authApiResponseError } from './actions';
+import { authApiResponseSuccess, authApiResponseError, userUpdate } from './actions';
 
 // constants
 import { AuthActionTypes } from './constants';
@@ -40,14 +41,14 @@ function* login({ payload: { email = '', password = '' } }: UserData): SagaItera
     const user = response?.data;
     if(user['result'])
     {
-    api.setLoggedInUser(user);
-    setAuthorization(user['token']);
-    yield put(authApiResponseSuccess(AuthActionTypes.LOGIN_USER, user));
+      api.setLoggedInUser(user);
+      setAuthorization(user['token']);
+      yield put(authApiResponseSuccess(AuthActionTypes.LOGIN_USER, user));
     }
     else{
-   yield put(authApiResponseError(AuthActionTypes.LOGIN_USER, user['message']));
-    api.setLoggedInUser(null);
-    setAuthorization(null);
+      yield put(authApiResponseError(AuthActionTypes.LOGIN_USER, user['message']));
+      api.setLoggedInUser(null);
+      setAuthorization(null);
     }
   } catch (error: any) {
     yield put(authApiResponseError(AuthActionTypes.LOGIN_USER, error.message || 'Login Failed'));
@@ -72,10 +73,8 @@ function* signup({ payload: { name = '', email = '', password = '' } }: UserData
     if (!name || !email || !password) throw new Error('Fullname, email, and password are required');
     const response = yield call(() => signupApi({ name, email, password }));
     const user = response.data;
-    console.log(user)
     yield put(authApiResponseSuccess(AuthActionTypes.SIGNUP_USER, user));
   } catch (error: any) {
-    console.log(error)
     yield put(authApiResponseError(AuthActionTypes.SIGNUP_USER, error.message || 'Signup Failed'));
   }
 }
@@ -88,6 +87,18 @@ function* forgotPassword({ payload: { name = '' } }: UserData): SagaIterator {
   } catch (error: any) {
     yield put(authApiResponseError(AuthActionTypes.FORGOT_PASSWORD, error.message || 'Password Reset Failed'));
   }
+}
+
+function* getData ():SagaIterator{
+try{
+  const response = yield call(()=> getDataApi() )
+  const user = response.data
+  yield put(userUpdate(AuthActionTypes.UPDATEUSER, user['userDetails']))
+}
+catch(error:any)
+{
+
+}
 }
 
 function* activateUser({ payload: { token = '' } }: UserData): SagaIterator {
@@ -121,6 +132,10 @@ export function* watchActivateUser(): SagaIterator {
   yield takeEvery(AuthActionTypes.ACTIVATE_USER, activateUser);
 }
 
+export function* watchGetData(): SagaIterator{
+  yield takeEvery(AuthActionTypes.GETDATA, getData)
+}
+
 // Root saga
 function* authSaga(): SagaIterator {
   yield all([
@@ -129,6 +144,7 @@ function* authSaga(): SagaIterator {
     fork(watchSignup),
     fork(watchForgotPassword),
     fork(watchActivateUser),
+    fork(watchGetData)
   ]);
 }
 

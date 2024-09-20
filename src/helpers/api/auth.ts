@@ -23,9 +23,14 @@ function forgotPassword(params: { name: string }) {
   return api.create(`${baseUrl}`, params);
 }
 
+function getData(){
+  const baseUrl = "/api/userdetails/";
+  return api.get(`${baseUrl}`);
+}
+
 function activateUser(params: { token: string }) {
   const baseUrl = "/activate/";
   return api.create(`${baseUrl}`, params);
 }
 
-export { login, logout, signup, forgotPassword, activateUser };
+export { login, logout, signup, forgotPassword, activateUser, getData };

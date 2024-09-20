@@ -2,12 +2,14 @@ import React, { Suspense, useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Container } from "react-bootstrap";
 
+
 // redux
 import { RootState, AppDispatch } from "../redux/store";
 import { LayoutTypes, SideBarTypes } from "../constants/layout";
 import { changeSidebarType } from "../redux/actions";
 
 // constants
+import { AuthActionTypes } from "../redux/auth/constants";
 // import { LayoutTypes, SideBarTypes } from '../constants';
 
 // utils
@@ -128,6 +130,11 @@ const VerticalLayout = ({ children }: VerticalLayoutProps) => {
       }
     }
   };
+
+  //GetData
+  useEffect(()=>{
+    dispatch({type:AuthActionTypes.GETDATA})
+  },[])
 
   const isCondensed: boolean =
     leftSideBarType === SideBarTypes.LEFT_SIDEBAR_TYPE_CONDENSED;

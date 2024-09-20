@@ -16,7 +16,6 @@ axios.interceptors.response.use(
   (error) => {
     // Any status codes that falls outside the range of 2xx cause this function to trigger
     let message;
-    console.log(error)
     if (error && error.response && error.response.status === 404) {
       // window.location.href = '/not-found';
     } else if (error && error.response && error.response.status === 403) {
@@ -51,8 +50,12 @@ const AUTH_SESSION_KEY = "ubold_user";
  * @param {*} token
  */
 const setAuthorization = (token: string | null) => {
-  if (token) axios.defaults.headers.common["auth-token"] = token;
-  else delete axios.defaults.headers.common["auth-token"];
+  if (token) {
+    axios.defaults.headers.get["auth-token"] = token;
+    axios.defaults.headers.common["auth-token"] = token;}
+  else {
+    delete axios.defaults.headers.get["auth-token"];
+    delete axios.defaults.headers.common["auth-token"];}
 };
 
 const getUserFromCookie = () => {
@@ -60,10 +63,11 @@ const getUserFromCookie = () => {
   return user ? (typeof user == "object" ? user : JSON.parse(user)) : null;
 };
 class APICore {
+  
   /**
    * Fetches data from given url
    */
-  get = (url: string, params: any) => {
+  get = (url: string, params?: any) => {
     let response;
     if (params) {
       var queryString = params
@@ -73,7 +77,7 @@ class APICore {
         : "";
       response = axios.get(`${url}?${queryString}`, params);
     } else {
-      response = axios.get(`${url}`, params);
+      response = axios.get(`${url}`);
     }
     return response;
   };
@@ -218,6 +222,7 @@ class APICore {
 Check if token available in session
 */
 let user = getUserFromCookie();
+
 if (user) {
   const { token } = user;
   if (token) {

@@ -11,19 +11,33 @@ export interface AuthActionType {
     | AuthActionTypes.LOGOUT_USER
     | AuthActionTypes.RESET
     | AuthActionTypes.ACTIVATE_USER
-    | AuthActionTypes.SIGNUP_USER;
+    | AuthActionTypes.SIGNUP_USER
+    | AuthActionTypes.UPDATEUSER;
   payload: {} | string;
 }
 
 interface UserData {
-  id: number;
-  username: string;
+  _id: string;
+  name: string;
   password: string;
   firstName: string;
   lastName: string;
   role: string;
   token: string;
+  email:string;
+  notification: any;
+  createdAt:string;
+  verified:boolean;
+  updatedAt:string;
+  __v:number
 }
+export const userUpdate = (
+  actionType: string,
+  data: UserData | {}
+): AuthActionType => ({
+  type: AuthActionTypes.UPDATEUSER,
+  payload: { actionType, data },
+});
 
 // common success
 export const authApiResponseSuccess = (

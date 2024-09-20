@@ -6,12 +6,19 @@ const api = new APICore();
 
 // Define more specific types for better type checking
 interface UserData {
-  id: number;
-  username: string;
+  _id: string;
+  name: string;
+  password: string;
   firstName: string;
   lastName: string;
   role: string;
   token: string;
+  email:string;
+  notification: any;
+  createdAt:string;
+  verified:boolean;
+  updatedAt:string;
+  __v:number
 }
 
 interface AuthState {
@@ -122,6 +129,9 @@ case AuthActionTypes.API_RESPONSE_ERROR:
     default:
       return { ...state };
   }
+
+    case AuthActionTypes.UPDATEUSER:
+      return {...state, user:action.payload.data as UserData}
 
     case AuthActionTypes.LOGIN_USER:
       return { ...state, loading: true, userLoggedIn: false };

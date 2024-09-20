@@ -6,7 +6,7 @@ import { RootState } from "../redux/store";
 
 // utils
 import { changeHTMLAttribute } from "../utils";
-
+ 
 const loading = () => <div className=""></div>;
 
 interface DefaultLayoutProps {
@@ -44,6 +44,8 @@ const DefaultLayout = (props: DefaultLayoutProps) => {
         );
     };
   }, []);
+
+
 
   // get the child view which we would like to render
   const children = props["children"] || null;
