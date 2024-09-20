@@ -18,7 +18,7 @@ import { VerticalForm, FormInput } from "../../components/";
 import AuthLayout from "./AuthLayout";
 
 interface UserData {
-  fullname: string;
+  name: string;
   email: string;
   password: string;
 }
@@ -104,7 +104,7 @@ const Register = () => {
    */
   const schemaResolver = yupResolver(
     yup.object().shape({
-      fullname: yup.string().required(t("Please enter Fullname")),
+      name: yup.string().required(t("Please enter Fullname")),
       email: yup
         .string()
         .required("Please enter Email")
@@ -118,7 +118,7 @@ const Register = () => {
    */
   const onSubmit = (formData: UserData) => {
     dispatch(
-      signupUser(formData["fullname"], formData["email"], formData["password"])
+      signupUser(formData["name"], formData["email"], formData["password"])
     );
   };
 
@@ -146,7 +146,7 @@ const Register = () => {
           <FormInput
             label={t("Full Name")}
             type="text"
-            name="fullname"
+            name="name"
             placeholder={t("Enter your name")}
             containerClass={"mb-3"}
           />

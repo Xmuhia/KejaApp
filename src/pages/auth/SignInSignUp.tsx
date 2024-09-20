@@ -54,7 +54,7 @@ const SignInSignUp = () => {
   const signUpSchema = yupResolver(
     yup.object().shape({
       password: yup.string().required(t("Please enter Password")),
-      fullname: yup.string().required(t("Please enter Fullname")),
+      username: yup.string().required(t("Please enter Fullname")),
       email: yup
         .string()
         .required("Please enter Email")
@@ -100,10 +100,10 @@ const SignInSignUp = () => {
                 defaultValues={{ username: "test", loginpassword: "test" }}
               >
                 <FormInput
-                  label="Username"
+                  label="Email"
                   type="text"
-                  name="username"
-                  placeholder="Enter your Username"
+                  name="email"
+                  placeholder="Enter your Email"
                   containerClass={"mb-3"}
                 />
                 <FormInput
@@ -156,9 +156,9 @@ const SignInSignUp = () => {
                 defaultValues={{}}
               >
                 <FormInput
-                  label={t("Full Name")}
+                  label={t("User Name")}
                   type="text"
-                  name="fullname"
+                  name="username"
                   placeholder={t("Enter your name")}
                   containerClass={"mb-3"}
                 />

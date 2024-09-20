@@ -19,7 +19,7 @@ import { VerticalForm, FormInput } from "../../components/";
 import AuthLayout from "./AuthLayout";
 
 interface UserData {
-  username: string;
+  email: string;
   password: string;
 }
 
@@ -112,7 +112,7 @@ const Login = () => {
   */
   const schemaResolver = yupResolver(
     yup.object().shape({
-      username: yup.string().required(t("Please enter Username")),
+      email: yup.string().email().required(t("Please enter Email")),
       password: yup.string().required(t("Please enter Password")),
     })
   );
@@ -121,7 +121,7 @@ const Login = () => {
   handle form submission
   */
   const onSubmit = (formData: UserData) => {
-    dispatch(loginUser(formData["username"], formData["password"]));
+    dispatch(loginUser(formData["email"], formData["password"]));
   };
 
   const location = useLocation();
@@ -148,13 +148,13 @@ const Login = () => {
         <VerticalForm<UserData>
           onSubmit={onSubmit}
           resolver={schemaResolver}
-          defaultValues={{ username: "test", password: "test" }}
+          defaultValues={{ email: "test@mail.com", password: "test" }}
         >
           <FormInput
-            label={t("Username")}
-            type="text"
-            name="username"
-            placeholder="Enter your Username"
+            label={t("Email")}
+            type="email"
+            name="email"
+            placeholder="Enter your Email"
             containerClass={"mb-3"}
           />
           <FormInput

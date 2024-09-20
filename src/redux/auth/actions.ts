@@ -43,11 +43,11 @@ export const authApiResponseError = (
 });
 
 export const loginUser = (
-  username: string,
+  email: string,
   password: string
 ): AuthActionType => ({
   type: AuthActionTypes.LOGIN_USER,
-  payload: { username, password },
+  payload: { email, password },
 });
 
 export const logoutUser = (): AuthActionType => ({
@@ -56,12 +56,12 @@ export const logoutUser = (): AuthActionType => ({
 });
 
 export const signupUser = (
-  fullname: string,
+  name: string,
   email: string,
   password: string
 ): AuthActionType => ({
   type: AuthActionTypes.SIGNUP_USER,
-  payload: { fullname, email, password },
+  payload: { name, email, password },
 });
 
 export const forgotPassword = (username: string): AuthActionType => ({

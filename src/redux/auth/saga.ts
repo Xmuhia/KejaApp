@@ -21,7 +21,7 @@ import { AuthActionTypes } from './constants';
 
 interface UserData {
   payload: {
-    username?: string;
+    name?: string;
     password?: string;
     fullname?: string;
     email?: string;
@@ -32,14 +32,23 @@ interface UserData {
 
 const api = new APICore();
 
-function* login({ payload: { username = '', password = '' } }: UserData): SagaIterator {
+function* login({ payload: { email = '', password = '' } }: UserData): SagaIterator {
   try {
-    if (!username || !password) throw new Error('Username and password are required');
-    const response = yield call(() => loginApi({ username, password }));
-    const user = response.data;
+    
+    if (!email || !password) throw new Error('Email and password are required');
+    const response = yield call(() => loginApi({ email, password }));
+    const user = response?.data;
+    if(user['result'])
+    {
     api.setLoggedInUser(user);
     setAuthorization(user['token']);
     yield put(authApiResponseSuccess(AuthActionTypes.LOGIN_USER, user));
+    }
+    else{
+   yield put(authApiResponseError(AuthActionTypes.LOGIN_USER, user['message']));
+    api.setLoggedInUser(null);
+    setAuthorization(null);
+    }
   } catch (error: any) {
     yield put(authApiResponseError(AuthActionTypes.LOGIN_USER, error.message || 'Login Failed'));
     api.setLoggedInUser(null);
@@ -58,21 +67,23 @@ function* logout(): SagaIterator {
   }
 }
 
-function* signup({ payload: { fullname = '', email = '', password = '' } }: UserData): SagaIterator {
+function* signup({ payload: { name = '', email = '', password = '' } }: UserData): SagaIterator {
   try {
-    if (!fullname || !email || !password) throw new Error('Fullname, email, and password are required');
-    const response = yield call(() => signupApi({ fullname, email, password }));
+    if (!name || !email || !password) throw new Error('Fullname, email, and password are required');
+    const response = yield call(() => signupApi({ name, email, password }));
     const user = response.data;
+    console.log(user)
     yield put(authApiResponseSuccess(AuthActionTypes.SIGNUP_USER, user));
   } catch (error: any) {
+    console.log(error)
     yield put(authApiResponseError(AuthActionTypes.SIGNUP_USER, error.message || 'Signup Failed'));
   }
 }
 
-function* forgotPassword({ payload: { username = '' } }: UserData): SagaIterator {
+function* forgotPassword({ payload: { name = '' } }: UserData): SagaIterator {
   try {
-    if (!username) throw new Error('Username is required');
-    const response = yield call(() => forgotPasswordApi({ username }));
+    if (!name) throw new Error('Username is required');
+    const response = yield call(() => forgotPasswordApi({ name }));
     yield put(authApiResponseSuccess(AuthActionTypes.FORGOT_PASSWORD, response.data));
   } catch (error: any) {
     yield put(authApiResponseError(AuthActionTypes.FORGOT_PASSWORD, error.message || 'Password Reset Failed'));

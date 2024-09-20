@@ -10,12 +10,13 @@ axios.defaults.baseURL = config.API_URL;
 // intercepting to capture errors
 axios.interceptors.response.use(
   (response) => {
+    
     return response;
   },
   (error) => {
     // Any status codes that falls outside the range of 2xx cause this function to trigger
     let message;
-
+    console.log(error)
     if (error && error.response && error.response.status === 404) {
       // window.location.href = '/not-found';
     } else if (error && error.response && error.response.status === 403) {
@@ -50,8 +51,8 @@ const AUTH_SESSION_KEY = "ubold_user";
  * @param {*} token
  */
 const setAuthorization = (token: string | null) => {
-  if (token) axios.defaults.headers.common["Authorization"] = "JWT " + token;
-  else delete axios.defaults.headers.common["Authorization"];
+  if (token) axios.defaults.headers.common["auth-token"] = token;
+  else delete axios.defaults.headers.common["auth-token"];
 };
 
 const getUserFromCookie = () => {
@@ -108,6 +109,7 @@ class APICore {
     }
     return axios.all(reqs);
   };
+
 
   /**
    * post given data to url
@@ -219,6 +221,7 @@ let user = getUserFromCookie();
 if (user) {
   const { token } = user;
   if (token) {
+    
     setAuthorization(token);
   }
 }

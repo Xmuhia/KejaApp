@@ -3,8 +3,8 @@ import { APICore } from "./apiCore";
 const api = new APICore();
 
 // account
-function login(params: { username: string; password: string }) {
-  const baseUrl = "/login/";
+function login(params: { email: string; password: string }) {
+  const baseUrl = "/api/login";
   return api.create(`${baseUrl}`, params);
 }
 
@@ -13,12 +13,12 @@ function logout() {
   return api.create(`${baseUrl}`, {});
 }
 
-function signup(params: { fullname: string; email: string; password: string }) {
-  const baseUrl = "/register/";
+function signup(params: { name: string; email: string; password: string }) {
+  const baseUrl = "/api/signup/";
   return api.create(`${baseUrl}`, params);
 }
 
-function forgotPassword(params: { username: string }) {
+function forgotPassword(params: { name: string }) {
   const baseUrl = "/forget-password/";
   return api.create(`${baseUrl}`, params);
 }
