@@ -15,6 +15,7 @@ import { AuthActionTypes } from "../redux/auth/constants";
 // utils
 import { changeHTMLAttribute } from "../utils";
 import { useViewport } from "../hooks/useViewPort";
+import Loading from "./Loading";
 
 // code splitting and lazy loading
 // https://blog.logrocket.com/lazy-loading-components-in-react-16-6-6cea535c0b52
@@ -136,11 +137,12 @@ const VerticalLayout = ({ children }: VerticalLayoutProps) => {
     dispatch({type:AuthActionTypes.GETDATA})
   },[])
 
+  const {mainload} = useSelector((state: RootState)=> state.Auth)
   const isCondensed: boolean =
     leftSideBarType === SideBarTypes.LEFT_SIDEBAR_TYPE_CONDENSED;
 
   return (
-    <>
+   <>{!mainload ?<>
       <div id="wrapper">
         <Suspense fallback={loading()}>
           <LeftSidebar isCondensed={isCondensed} hideLogo={false} />
@@ -167,7 +169,7 @@ const VerticalLayout = ({ children }: VerticalLayoutProps) => {
           <RightSidebar />
         </Suspense>
       )}
-    </>
+    </>: <div className=" flex justify-content-center align-content-center"><Loading/></div>}</> 
   );
 };
 export default VerticalLayout;

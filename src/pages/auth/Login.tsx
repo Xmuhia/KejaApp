@@ -171,11 +171,6 @@ const Login = () => {
             </Button>
           </div>
         </VerticalForm>
-
-        <div className="text-center">
-          <h5 className="mt-3 text-muted">{t("Sign in with")}</h5>
-          <SocialLinks />
-        </div>
       </AuthLayout>
     </>
   );

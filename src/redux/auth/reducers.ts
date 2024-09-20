@@ -32,6 +32,7 @@ interface AuthState {
   passwordChange: boolean;
   resetPasswordSuccess: boolean | null;
   activationSuccess: boolean | null;
+  mainload:boolean
 }
 
 const INIT_STATE: AuthState = {
@@ -45,6 +46,7 @@ const INIT_STATE: AuthState = {
   passwordChange: false,
   resetPasswordSuccess: null,
   activationSuccess: null,
+  mainload:true
 };
 
 interface AuthActionType {
@@ -131,7 +133,7 @@ case AuthActionTypes.API_RESPONSE_ERROR:
   }
 
     case AuthActionTypes.UPDATEUSER:
-      return {...state, user:action.payload.data as UserData}
+      return {...state, user:action.payload.data as UserData, mainload:false}
 
     case AuthActionTypes.LOGIN_USER:
       return { ...state, loading: true, userLoggedIn: false };

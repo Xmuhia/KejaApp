@@ -3,10 +3,11 @@ import { Link, useLocation } from "react-router-dom";
 import { Collapse } from "react-bootstrap";
 import classNames from "classnames";
 import FeatherIcon from "feather-icons-react";
-
+import { useSelector } from "react-redux";
 //helpers
 import { findAllParent, findMenuItem } from "../helpers/menu";
 
+import { RootState } from "../redux/store";
 // constants
 import { MenuItemTypes } from "../constants/menu";
 
@@ -17,6 +18,7 @@ interface SubMenus {
   activeMenuItems?: Array<string>;
   toggleMenu?: (item: any, status: boolean) => void;
   className?: string;
+  role?:string
 }
 
 const MenuItemWithChildren = ({
@@ -25,6 +27,7 @@ const MenuItemWithChildren = ({
   subMenuClassNames,
   activeMenuItems,
   toggleMenu,
+  role
 }: SubMenus) => {
   const [open, setOpen] = useState<boolean>(
     activeMenuItems!.includes(item.key)
@@ -42,8 +45,8 @@ const MenuItemWithChildren = ({
     return false;
   };
 
-  return (
-    <li className={classNames("menu-item", { "menuitem-active": open })}>
+  return (<>
+    {(item?.role == role || item?.role == "all")&&<li className={classNames("menu-item", { "menuitem-active": open })}>
       <Link
         to="#"
         onClick={toggleMenuItem}
@@ -77,7 +80,7 @@ const MenuItemWithChildren = ({
             {(item.children || []).map((child, i) => {
               return (
                 <React.Fragment key={i}>
-                  {child.children ? (
+                  {child.children ? (child?.role == role || child?.role == "all")&& (
                     <>
                       {/* parent */}
                       <MenuItemWithChildren
@@ -90,7 +93,7 @@ const MenuItemWithChildren = ({
                         toggleMenu={toggleMenu}
                       />
                     </>
-                  ) : (
+                  ) :(child?.role == role || child?.role == "all")&& (
                     <>
                       {/* child */}
                       <MenuItem
@@ -112,7 +115,7 @@ const MenuItemWithChildren = ({
           </ul>
         </div>
       </Collapse>
-    </li>
+    </li>}</>
   );
 };
 
@@ -204,6 +207,11 @@ const AppMenu = ({ menuItems }: AppMenuProps) => {
     }
   }, [location, menuItems]);
 
+  //userData
+  const {user} = useSelector((state: RootState)=> state.Auth)
+  //userRole
+  const Role = user['role']
+
   useEffect(() => {
     activeMenu();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -216,7 +224,7 @@ const AppMenu = ({ menuItems }: AppMenuProps) => {
           //
           return (
             <React.Fragment key={idx}>
-              {item.isTitle ? (
+              {item.isTitle ? (item?.role == Role || item?.role == "all")&&  (
                 <li
                   className={classNames("menu-title", {
                     "mt-2": idx !== 0,
@@ -233,8 +241,9 @@ const AppMenu = ({ menuItems }: AppMenuProps) => {
                       subMenuClassNames="sub-menu"
                       activeMenuItems={activeMenuItems}
                       linkClassName="menu-link"
+                      role={Role}
                     />
-                  ) : (
+                  ) :(item?.role == Role || item?.role == "all")&& (
                     <MenuItem
                       item={item}
                       linkClassName="menu-link"

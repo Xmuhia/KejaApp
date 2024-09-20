@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { Dropdown } from "react-bootstrap";
 import classNames from "classnames";
+import DefaultImage from "./DefaultImage";
 
 interface ProfileMenuItem {
   label: string;
@@ -11,13 +12,14 @@ interface ProfileMenuItem {
 
 interface ProfileDropdownProps {
   menuItems: Array<ProfileMenuItem>;
-  profilePic?: string;
+  profile?: string;
   username: string;
   userTitle?: string;
 }
 
 const ProfileDropdown = (props: ProfileDropdownProps) => {
-  const profilePic = props["profilePic"] || null;
+  const profilePic = props["profile"] || null;
+  const FirstLetter =    props?.username?.charAt(0)?.toUpperCase();
   const [dropdownOpen, setDropdownOpen] = useState<boolean>(false);
 
   /*
@@ -38,8 +40,8 @@ const ProfileDropdown = (props: ProfileDropdownProps) => {
           { show: dropdownOpen }
         )}
       >
-        <img src={profilePic!} className="rounded-circle" alt="" />
-        <span className="pro-user-name ms-1">
+        {profilePic?<img src={profilePic!} className="rounded-circle" alt="" />:<DefaultImage letter={FirstLetter}/>}
+        <span className="pro-user-name ms-2">
           {props["username"]} <i className="mdi mdi-chevron-down"></i>
         </span>
       </Dropdown.Toggle>

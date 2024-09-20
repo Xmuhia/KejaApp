@@ -23,7 +23,6 @@ import ProfileDropdown from "../components/ProfileDropdown";
 import CreateNew from "../components/CreateNew";
 import MegaMenu from "../components/MegaMenu";
 
-import profilePic from "../assets/images/users/user-1.jpg";
 import avatar4 from "../assets/images/users/user-4.jpg";
 import logoSm from "../assets/images/logo-sm.png";
 import logoDark from "../assets/images/logo-dark.png";
@@ -47,7 +46,6 @@ const Notifications: NotificationItem[] = [
     id: 1,
     text: "Cristina Pride",
     subText: "Hi, How are you? What about our next meeting",
-    avatar: profilePic,
   },
   {
     id: 2,
@@ -385,7 +383,7 @@ const Topbar = ({
             </li>
             <li className="dropdown">
               <ProfileDropdown
-                profilePic={profilePic}
+                profile={user?.profile_image}
                 menuItems={ProfileMenus}
                 username={user?.name}
                 userTitle={user?.role}

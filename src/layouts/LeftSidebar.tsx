@@ -140,6 +140,8 @@ const LeftSidebar = ({ isCondensed, hideLogo }: LeftSidebarProps) => {
     }
   };
 
+
+  
   useEffect(() => {
     document.addEventListener("mousedown", handleOtherClick, false);
 
